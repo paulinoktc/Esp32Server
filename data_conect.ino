@@ -2,9 +2,63 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <HTTPClient.h>
-//sensor de temperatura
+//sensor de temperatura------------
 #include <OneWire.h>
 #include <DallasTemperature.h>
+//Dysplay--------------------------
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+//--------------------------------
+
+// OLED FeatherWing buttons map to different pins depending on board.
+// The I2C (Wire) bus may also be different.
+#if defined(ESP8266)
+  #define BUTTON_A  0
+  #define BUTTON_B 16
+  #define BUTTON_C  2
+  #define WIRE Wire
+#elif defined(ARDUINO_ADAFRUIT_FEATHER_ESP32C6)
+  #define BUTTON_A  7
+  #define BUTTON_B  6
+  #define BUTTON_C  5
+  #define WIRE Wire
+#elif defined(ESP32)
+  #define BUTTON_A 15
+  #define BUTTON_B 32
+  #define BUTTON_C 14
+  #define WIRE Wire
+#elif defined(ARDUINO_STM32_FEATHER)
+  #define BUTTON_A PA15
+  #define BUTTON_B PC7
+  #define BUTTON_C PC5
+  #define WIRE Wire
+#elif defined(TEENSYDUINO)
+  #define BUTTON_A  4
+  #define BUTTON_B  3
+  #define BUTTON_C  8
+  #define WIRE Wire
+#elif defined(ARDUINO_FEATHER52832)
+  #define BUTTON_A 31
+  #define BUTTON_B 30
+  #define BUTTON_C 27
+  #define WIRE Wire
+#elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+  #define BUTTON_A  9
+  #define BUTTON_B  8
+  #define BUTTON_C  7
+  #define WIRE Wire1
+#else // 32u4, M0, M4, nrf52840 and 328p
+  #define BUTTON_A  9
+  #define BUTTON_B  6
+  #define BUTTON_C  5
+  #define WIRE Wire
+#endif
+
+Adafruit_SSD1306 display = Adafruit_SSD1306(128, 32, &WIRE);
+
+
 const int oneWireBus = 4;//pin
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors (&oneWire);
@@ -32,6 +86,13 @@ void setup() {
 
   const char* ssid     = "Redmi";
   const char* password = "12345678";
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+
+  display.display();
+
+  display.clearDisplay();
+  display.display();
 
   Serial.println("Desconectamos antes de conectar el WiFi");
   WiFi.disconnect();
@@ -65,8 +126,19 @@ void setup() {
 }
 
 void loop() {
-  //
-  
+  //lipiar la pantalla
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+ 
+/*
+  if(!digitalRead(BUTTON_A)) display.print("A");
+  if(!digitalRead(BUTTON_B)) display.print("B");
+  if(!digitalRead(BUTTON_C)) display.print("C");
+ */
+   display.setTextSize(1);
+   display.setCursor(0,0);
+     display.print("..M E M O S C..");
   /*sensor*/
   sensors.begin();
   sensors.requestTemperatures();
@@ -99,6 +171,15 @@ void loop() {
 
     // Construir el cuerpo de la solicitud HTTP
   String data = "sensor=" + String(sensor1) + "&valor=" + String(temperatureC) + "&sensor2=" + String(sensor2)+ "&valor2=" + String(suma);
+   display.setCursor(0, 8);
+   display.print(suma);
+   display.print("Hz");
+
+   display.setCursor(0, 16);
+   display.print(temperatureC);
+   display.print("°C");
+
+   
   suma=0;
 
   HTTPClient http;
@@ -124,6 +205,10 @@ void loop() {
 
   server.handleClient();
 
+  display.display(); // actually display all of the above
+  
+  delay(100);
+  yield();
   
   }
   hzs=hzs+1;
