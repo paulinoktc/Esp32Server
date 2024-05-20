@@ -124,7 +124,7 @@ void loop() {
 
   server.handleClient();
 
-  delay(400);
+  
   }
   hzs=hzs+1;
 }
