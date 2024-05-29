@@ -64,12 +64,13 @@ int hzs = 0;
 int suma = 0;
 int Pin_Sensor = 5;
 
-const char* serverUrl = "http://192.168.28.70/serverx.php";
+const char* serverUrl = "http://192.168.172.70/serverx.php";
 
 WebServer server(80);
 
 void setup() {
   Serial.begin(115200);
+  
 
   const char* ssid = "Redmi";
   const char* password = "12345678";
@@ -87,6 +88,7 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
+  dysplayInit();
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -129,6 +131,18 @@ void displayInfo(float temperatureC, int suma) {
   display.display();
 }
 
+
+void dysplayInit() {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.print("..M E M O S C..");
+  display.setCursor(0, 8);
+  display.print("Conectando....");
+  display.display();
+}
+
 void loop() {
   
   sensors.begin();
@@ -139,14 +153,21 @@ void loop() {
   Serial.print(temperatureC);
   Serial.println("C");
   Serial.print(vibrate);
+  Serial.println(" v");
 
   arrayVibrate[hzs] = vibrate;
 
-  if (hzs == 20) {
+  if (hzs >= 20) {
     hzs = 0;
     for (int i = 0; i < 20; i++) {
       suma += arrayVibrate[i];
     }
+    suma+10;
+
+    if(suma>=25){
+      
+    }
+    
     Serial.print(suma);
     Serial.println(" Hz");
 
