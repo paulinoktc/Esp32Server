@@ -63,6 +63,7 @@ int arrayVibrate[20];
 int hzs = 0;
 int suma = 0;
 int Pin_Sensor = 5;
+int Pin_led = 2;
 
 const char* serverUrl = "http://192.168.172.70/serverx.php";
 
@@ -71,10 +72,13 @@ WebServer server(80);
 void setup() {
   Serial.begin(115200);
   
-
+/*
   const char* ssid = "Redmi";
   const char* password = "12345678";
-
+*/
+  const char* ssid = "CPZ14";
+  const char* password = "12345678";
+  
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.display();
   display.clearDisplay();
@@ -109,6 +113,7 @@ void setup() {
   });
 
   pinMode(Pin_Sensor, INPUT);
+  pinMode(Pin_led, OUTPUT);
   server.begin();
 }
 
@@ -162,10 +167,15 @@ void loop() {
     for (int i = 0; i < 20; i++) {
       suma += arrayVibrate[i];
     }
-    suma+10;
 
-    if(suma>=25){
-      
+    if(suma!=0){
+      suma=suma+10;
+    }
+  
+    if(suma>=25 || temperatureC>=30){
+      digitalWrite(Pin_led, HIGH);
+    }else{
+      digitalWrite(Pin_led, LOW);
     }
     
     Serial.print(suma);
