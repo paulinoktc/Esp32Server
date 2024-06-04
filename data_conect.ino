@@ -65,7 +65,7 @@ int suma = 0;
 int Pin_Sensor = 5;
 int Pin_led = 2;
 
-const char* serverUrl = "http://192.168.172.70/serverx.php";
+const char* serverUrl = "http://192.168.8.100/serverx.php";
 
 WebServer server(80);
 
@@ -76,8 +76,8 @@ void setup() {
   const char* ssid = "Redmi";
   const char* password = "12345678";
 */
-  const char* ssid = "CPZ14";
-  const char* password = "12345678";
+  const char* ssid = "BLUETELECOMM_8C36";
+  const char* password = "123456714z";
   
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.display();
