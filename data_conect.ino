@@ -65,7 +65,7 @@ int suma = 0;
 int Pin_Sensor = 5;
 int Pin_led = 2;
 
-const char* serverUrl = "http://192.168.8.100/serverx.php";
+const char* serverUrl = "http://192.168.8.70/serverx.php";
 
 WebServer server(80);
 
